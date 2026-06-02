@@ -26,21 +26,9 @@
 
 | Thành viên | Vai trò phụ trách | Nhánh Git làm việc | Nhiệm vụ cụ thể |
 | :--- | :--- | :--- | :--- |
-| **Bùi Ánh Quyên**<br>*(Trưởng nhóm)* | **Core & Voice Developer** | `feature-voice-core` | 
-- Khởi tạo cấu trúc dự án, làm khung giao diện chính (Trang chủ, Menu, các nút Record).
-- Lập trình tính năng Micro nhận diện giọng nói và hiển thị text realtime.
-- Tích hợp chế độ "Meeting mode" (Phân biệt người nói).
-- Phụ trách làm Slide thuyết trình.
-| **Nguyễn Thị Minh Anh** | **AI Integration Engineer** | `feature-ai-integration` |
-- Kết nối và gọi API từ mô hình AI (Gemini/OpenAI).
-- Xử lý logic AI tóm tắt văn bản, trích xuất ít nhất 3 Key points (Anh/Việt).
-- Lập trình tính năng AI tự động tạo câu hỏi ôn tập Flashcard.
-- Phụ trách làm báo cáo
-| **Đào Ngọc Quỳnh Anh** | **UI/UX & Utilities Developer** | `feature-ui-utilities` |
-- Thiết kế giao diện hiển thị hộp thoại tóm tắt, các thẻ Key points và Flashcard.
-- Làm nút Copy nhanh, tính năng xuất file `.txt`/`.md`.
-- Làm tính năng tích hợp lịch học.
-- Phụ trách thuyết trình. |
+| **Bùi Ánh Quyên**<br>*(Trưởng nhóm)* | **Core & Voice Developer** | `feature-voice-core` | - Khởi tạo cấu trúc dự án, làm khung giao diện chính (Trang chủ, Menu, các nút Record).<br>- Lập trình tính năng Micro nhận diện giọng nói và hiển thị text realtime.<br>- Tích hợp chế độ "Meeting mode" (Phân biệt người nói).<br>- Phụ trách làm Slide thuyết trình. |
+| **Nguyễn Thị Minh Anh** | **AI Integration Engineer** | `feature-ai-integration` | - Kết nối và gọi API từ mô hình AI (Gemini/OpenAI).<br>- Xử lý logic AI tóm tắt văn bản, trích xuất ít nhất 3 Key points (Anh/Việt).<br>- Lập trình tính năng AI tự động tạo câu hỏi ôn tập Flashcard.<br>- Phụ trách làm báo cáo. |
+| **Đào Ngọc Quỳnh Anh** | **UI/UX & Utilities Developer** | `feature-ui-utilities` | - Thiết kế giao diện hiển thị hộp thoại tóm tắt, các thẻ Key points và Flashcard.<br>- Làm nút Copy nhanh, tính năng xuất file `.txt`/`.md`.<br>- Làm tính năng tích hợp lịch học.<br>- Phụ trách thuyết trình chính. |
 
 ---
 
