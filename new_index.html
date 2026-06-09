@@ -1,1 +1,232 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoiceHelper</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="app-title" id="appTitle">🐱 Voice<span>Helper</span></div>
+  <div class="topbar-right">
+    <div class="language">
+      <button id="btnVI" class="active">🇻🇳 VI</button>
+      <button id="btnEN">🇺🇸 EN</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+
+  <!-- LEFT: main content -->
+  <div class="left-panel">
+
+    <!-- RECORD -->
+    <div class="record-card">
+      <div id="timer">00:00</div>
+      <div class="record-btns">
+        <button id="recordBtn">🎤 <span id="recordLabel">Ghi âm</span></button>
+        <button id="stopBtn">⏹ <span id="stopLabel">Dừng</span></button>
+        <button id="meetingModeBtn" class="meeting-mode-btn">👥 <span id="meetingLabel">Meeting Mode</span></button>
+      </div>
+      <div id="meetingBadge" class="meeting-badge" style="display:none">🔴 MEETING MODE – Phân biệt người nói</div>
+
+      <!-- MODE SELECTOR -->
+      <div id="modeSelectorRow" class="mode-selector-row">
+        <button id="modeStudyBtn" class="mode-btn mode-btn-study">🎓 <span>Học tập</span></button>
+        <button id="modeWorkBtn"  class="mode-btn mode-btn-work">💼 <span>Công việc</span></button>
+      </div>
+      <!-- STUDY TOOLS -->
+      <div id="studyToolsRow" class="mode-tools-row" style="display:none">
+        <button id="chatNoteBtn" class="mode-tool-btn">💬 Hỏi đáp ghi chú</button>
+      </div>
+      <!-- WORK TOOLS -->
+      <div id="workToolsRow" class="mode-tools-row" style="display:none">
+        <button id="exportMinutesBtn" class="mode-tool-btn">📄 Xuất biên bản</button>
+      </div>
+    </div>
+
+    <!-- TRANSCRIPT -->
+    <div class="panel-block">
+      <div class="block-label" id="transcriptTitle">NỘI DUNG</div>
+      <textarea id="transcript" placeholder="Nội dung ghi âm sẽ hiện ở đây..." readonly></textarea>
+    </div>
+
+    <!-- SAVE NOTE ROW -->
+    <div class="save-note-row">
+      <div class="save-note-date-wrap">
+        <label class="save-date-label" id="saveDateLabel">📅 Lưu vào ngày:</label>
+        <input type="date" id="studyDate" class="save-date-input">
+      </div>
+      <div class="save-note-title-wrap">
+        <input type="text" id="noteTitle" class="save-note-title-input" placeholder="Tiêu đề ghi chú (tuỳ chọn)">
+      </div>
+      <button id="saveNoteBtn" class="save-note-btn">💾 <span id="saveLabel">Lưu ghi chú</span></button>
+    </div>
+
+    <!-- ANALYZE -->
+    <button id="analyzeBtn">✨ <span id="analyzeLabel">Phân tích AI</span></button>
+
+    <!-- RESULT -->
+    <div id="result"></div>
+
+    <!-- EXPORT -->
+    <div class="export-row">
+      <button id="exportTxtBtn">📄 TXT</button>
+      <button id="exportMdBtn">📝 MD</button>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: sidebar -->
+  <div class="right-panel">
+
+    <!-- 1. ACTIONS (TOP) -->
+    <div class="side-actions">
+      <button id="historyBtn">🕐 <span id="historyLabel">Lịch sử</span></button>
+    </div>
+
+    <!-- 2. CALENDAR -->
+    <h2 id="calendarTitle">📅 Lịch học</h2>
+    <div id="miniCalendar" class="mini-calendar"></div>
+
+    <!-- 3. NOTE VIEWER (hiện khi bấm ngày có ghi chú) -->
+    <div id="noteViewer" class="note-viewer" style="display:none">
+      <div class="note-viewer-header">
+        <span class="note-viewer-date" id="noteViewerDate"></span>
+        <button class="note-viewer-close" onclick="closeNoteViewer()">✕</button>
+      </div>
+      <div id="noteViewerBody"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- HISTORY MODAL -->
+<div id="historyModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeHistoryModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span>🕐 <span id="historyModalTitle">Lịch sử ghi chú</span></span>
+      <button class="modal-close" onclick="closeHistoryModal()">✕</button>
+    </div>
+    <div class="history-search-wrap">
+      <span class="history-search-icon">🔍</span>
+      <input type="text" id="historySearchInput" class="history-search-input" placeholder="Tìm kiếm ghi chú..." oninput="onHistorySearch(this.value)">
+      <button class="history-search-clear" id="historySearchClear" onclick="clearHistorySearch()" style="display:none">✕</button>
+    </div>
+    <div class="history-toolbar">
+      <div id="historyCount" class="history-count"></div>
+      <div class="history-toolbar-actions">
+        <button id="deleteAllNotesBtn" class="delete-all-notes-btn" onclick="deleteAllNotes()" style="display:none">🗑️ <span id="deleteAllLabel">Xóa tất cả</span></button>
+      </div>
+    </div>
+    <div id="historyList" class="history-list"></div>
+  </div>
+</div>
+
+<!-- REMINDER MODAL -->
+<div id="reminderModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('reminderModal')">
+  <div class="modal-box modal-box-sm">
+    <div class="modal-header">🔔 <span id="reminderModalTitle">Nhắc nhở sự kiện</span>
+      <button class="modal-close" onclick="closeModal('reminderModal')">✕</button>
+    </div>
+    <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:.9rem;color:#555" id="reminderDesc">Chọn ngày sự kiện. Bạn sẽ được nhắc hàng ngày từ 1 tháng trước đến ngày đó.</div>
+      <input type="date" id="reminderDate" class="save-date-input" style="width:100%">
+      <input type="text" id="reminderNote" class="save-note-title-input" placeholder="Ghi chú thêm (tuỳ chọn)" style="width:100%;padding:10px 12px;border:1.5px solid #ffd0cc;border-radius:10px;font-family:inherit;font-size:.9rem;outline:none">
+      <button id="reminderSaveBtn" onclick="saveReminder()" style="background:var(--red);color:#fff;padding:12px;border-radius:10px;font-size:.95rem;width:100%">💾 <span id="reminderSaveLabel">Lưu & Gửi Gmail</span></button>
+      <div id="reminderList" style="display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT NOTE MODAL -->
+<div id="chatNoteModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('chatNoteModal')">
+  <div class="modal-box" style="max-height:88vh">
+    <div class="modal-header">💬 <span id="chatModalTitle">Hỏi đáp với ghi chú</span>
+      <button class="modal-close" onclick="closeModal('chatNoteModal')">✕</button>
+    </div>
+    <div id="chatMessages" class="chat-messages"></div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" class="chat-input" placeholder="Hỏi về nội dung ghi chú..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button onclick="sendChat()" class="chat-send-btn">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACTION ITEMS MODAL -->
+<div id="actionModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('actionModal')">
+  <div class="modal-box">
+    <div class="modal-header">✅ <span id="actionModalTitle">Action Items</span>
+      <button class="modal-close" onclick="closeModal('actionModal')">✕</button>
+    </div>
+    <div id="actionModalBody" style="padding:18px;overflow-y:auto;max-height:70vh"></div>
+  </div>
+</div>
+
+<!-- EXPORT MINUTES MODAL -->
+<div id="minutesModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('minutesModal')">
+  <div class="modal-box">
+    <div class="modal-header">📄 <span id="minutesModalTitle">Xuất biên bản họp</span>
+      <button class="modal-close" onclick="closeModal('minutesModal')">✕</button>
+    </div>
+    <div style="padding:18px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="save-date-label">📌 Tên cuộc họp</label><input type="text" id="minutesTitle" class="save-note-title-input" style="width:100%;margin-top:4px;padding:9px 12px;border:1.5px solid #ffd0cc;border-radius:10px;font-family:inherit;font-size:.88rem;outline:none" placeholder="Họp dự án tháng 6..."></div>
+        <div><label class="save-date-label">📅 Ngày họp</label><input type="date" id="minutesDate" class="save-date-input" style="width:100%;margin-top:4px"></div>
+        <div><label class="save-date-label">📍 Địa điểm</label><input type="text" id="minutesLocation" class="save-note-title-input" style="width:100%;margin-top:4px;padding:9px 12px;border:1.5px solid #ffd0cc;border-radius:10px;font-family:inherit;font-size:.88rem;outline:none" placeholder="Phòng họp A / Google Meet..."></div>
+        <div><label class="save-date-label">👥 Thành phần</label><input type="text" id="minutesAttendees" class="save-note-title-input" style="width:100%;margin-top:4px;padding:9px 12px;border:1.5px solid #ffd0cc;border-radius:10px;font-family:inherit;font-size:.88rem;outline:none" placeholder="Anh Nam, Chị Lan, Anh Hùng..."></div>
+      </div>
+      <div id="minutesPreview" style="background:#f9f9f9;border:1.5px solid #ffd0cc;border-radius:10px;padding:14px;font-size:.84rem;line-height:1.7;max-height:280px;overflow-y:auto;white-space:pre-wrap;color:#333"></div>
+      <div style="display:flex;gap:10px">
+        <button onclick="generateMinutes()" style="flex:1;background:var(--red);color:#fff;padding:12px;border-radius:10px;font-size:.92rem">🤖 Tạo biên bản AI</button>
+        <button onclick="downloadMinutesTxt()" id="downloadMinutesBtn" style="flex:1;background:#2e7d32;color:#fff;padding:12px;border-radius:10px;font-size:.92rem;display:none">⬇️ Tải TXT</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+window.addEventListener("load", function() {
+
+  var _timerInterval = null;
+
+  function startTimer() {
+    window.seconds = 0;
+    clearInterval(_timerInterval);
+    _timerInterval = setInterval(function() {
+      window.seconds++;
+      var m = String(Math.floor(window.seconds / 60)).padStart(2, "0");
+      var s = String(window.seconds % 60).padStart(2, "0");
+      document.getElementById("timer").innerText = m + ":" + s;
+    }, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(_timerInterval);
+    _timerInterval = null;
+  }
+
+  // Meeting Mode tự bật/tắt timer
+  var meetingBtn = document.getElementById("meetingModeBtn");
+  meetingBtn.addEventListener("click", function() {
+    setTimeout(function() {
+      var active = document.getElementById("meetingBadge").style.display !== "none";
+      if (active) { startTimer(); } else { stopTimer(); }
+    }, 50);
+  });
+
+  // Nút Dừng cũng dừng timer
+  document.getElementById("stopBtn").addEventListener("click", function() {
+    stopTimer();
+  });
+
+});
+</script>
+</body>
+</html>
