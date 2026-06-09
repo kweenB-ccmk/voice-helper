@@ -24,28 +24,27 @@
 
 Để đảm bảo tính công bằng và lịch sử đóng góp (Commit) chuẩn chỉnh trên GitHub, công việc được phân chia theo từng cụm tính năng độc lập từ giao diện đến xử lý logic:
 
-| Thành viên | Vai trò phụ trách | Nhánh Git làm việc | Nhiệm vụ cụ thể |
+| Thành viên | Vai trò phụ trách | Nhiệm vụ kỹ thuật cụ thể | Nhiệm vụ vận hành |
 | :--- | :--- | :--- | :--- |
-| **Bùi Ánh Quyên**<br>*(Trưởng nhóm)* | **Core & Voice Developer** | `feature-voice-core` | - Khởi tạo cấu trúc dự án, làm khung giao diện chính (Trang chủ, Menu, các nút Record).<br>- Lập trình tính năng Micro nhận diện giọng nói và hiển thị text realtime.<br>- Tích hợp chế độ "Meeting mode" (Phân biệt người nói).<br>- Phụ trách làm Slide thuyết trình. |
-| **Nguyễn Thị Minh Anh** | **AI Integration Engineer** | `feature-ai-integration` | - Kết nối và gọi API từ mô hình AI (Gemini/OpenAI).<br>- Xử lý logic AI tóm tắt văn bản, trích xuất ít nhất 3 Key points (Anh/Việt).<br>- Lập trình tính năng AI tự động tạo câu hỏi ôn tập Flashcard.<br>- Phụ trách làm báo cáo. |
-| **Đào Ngọc Quỳnh Anh** | **UI/UX & Utilities Developer** | `feature-ui-utilities` | - Thiết kế giao diện hiển thị hộp thoại tóm tắt, các thẻ Key points và Flashcard.<br>- Làm nút Copy nhanh, tính năng xuất file `.txt`/`.md`.<br>- Làm tính năng tích hợp lịch học.<br>- Phụ trách thuyết trình chính. |
+| **Bùi Ánh Quyên** | Trưởng nhóm | - Lập trình tính năng Micro nhận diện giọng nói và hiển thị text realtime qua Groq Cloud API.<br>- Xử lý logic AI kết nối API để phân tích chuyên sâu và **tóm tắt nội dung** văn bản (Anh/Việt).<br>- Nghiên cứu và xây dựng thuật toán AI tự động tạo câu hỏi ôn tập **Flashcard** từ bài học.<br>- Phát triển tính năng thông minh: **Hỏi đáp trực tiếp dựa trên ghi chú** (Q&A Note Assistant). | - Phụ trách làm Slide thuyết trình.|
+| **Nguyễn Thị Minh Anh** | Thành viên | - Khởi tạo cấu trúc toàn bộ dự án, quản lý luồng dữ liệu.<br>- Thiết kế logic nhận diện và xử lý chế độ **"Meeting mode"** (Phân biệt người nói).<br>- Xây dựng chức năng tự động trích xuất và **xuất biên bản cuộc họp** chuyên nghiệp.<br>- Xây dựng cơ chế **lưu trữ lịch sử** cuộc họp/ghi chú hệ thống. | - Phụ trách làm báo cáo tiến độ và báo cáo tổng kết. |
+| **Đào Ngọc Quỳnh Anh** | Thành viên | - Thiết kế và xây dựng khung giao diện chính (Trang chủ, Menu điều hướng, hệ thống nút bấm Record).<br>- Làm giao diện hiển thị hộp thoại tóm tắt, hiệu ứng xoay lật 3D của thẻ Flashcard và biên bản.<br>- Phát triển bộ công cụ tiện ích: Nút Copy nhanh và chức năng **xuất file đa định dạng (`.txt` / `.md`)** về máy tính.<br>- Xây dựng module lịch học, tích hợp công cụ nâng cao **tìm kiếm dữ liệu trong lịch sử**. | - Phụ trách thuyết trình chính trước giảng viên. |
 
 ---
 
 ## 🛠️ Công nghệ sử dụng
 *   **Front-end:** HTML5, CSS3, JavaScript (hoặc công nghệ nhóm chốt sau...)
-*   **Back-end & AI:** Python / Node.js kết hợp API AI (Gemini API / OpenAI API)
 *   **Quản lý mã nguồn:** Git & GitHub
 
 ---
 
 ## 🗓️ Tiến độ dự án (Roadmap)
 - [x] Khởi tạo Kho lưu trữ (Repository) và phân chia công việc.
-- [ ] Thiết kế giao diện nháp (UI/UX Mockup) trên Figma hoặc giấy.
-- [ ] Lập trình các tính năng cốt lõi (Micro realtime, Kết nối API AI tóm tắt).
-- [ ] Lập trình các tính năng nâng cao (Flashcard, Xuất file, Lịch).
-- [ ] Gộp code (Merge), kiểm thử toàn diện và sửa lỗi (Bug).
-- [ ] Hoàn thiện Slide, viết file báo cáo và chuẩn bị Demo thuyết trình.
+- [x] Thiết kế giao diện nháp (UI/UX Mockup) trên Figma hoặc giấy.
+- [x] Lập trình các tính năng cốt lõi (Micro realtime, Kết nối API AI tóm tắt).
+- [x] Lập trình các tính năng nâng cao (Flashcard, Xuất file, Lịch).
+- [x] Gộp code (Merge), kiểm thử toàn diện và sửa lỗi (Bug).
+- [x] Hoàn thiện Slide, viết file báo cáo và chuẩn bị Demo thuyết trình.
 
 ---
 *Ghi chú nội bộ: Các thành viên tuyệt đối không code đè lên nhánh `main`. Hãy tạo nhánh phụ theo tên được phân công ở bảng trên, sau khi hoàn thành một function thì Commit rõ nghĩa và tạo Pull Request để Trưởng nhóm duyệt.*
