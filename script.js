@@ -115,6 +115,7 @@ function saveNote() {
         title: title || (isVI ? `Ghi chú ${new Date().toLocaleTimeString("vi-VN", {hour:"2-digit",minute:"2-digit"})}` : `Note ${new Date().toLocaleTimeString("en-US", {hour:"2-digit",minute:"2-digit"})}`),
         transcript,
         analysis,
+        duration: seconds || 0,
         createdAt: new Date().toISOString()
     };
 
@@ -535,6 +536,7 @@ function showNoteViewer(dateStr, notes) {
                     <span class="nv-card-num">${idx + 1}</span>
                     <span class="nv-card-name">${escapeHtml(note.title)}</span>
                     ${createdTime ? `<span class="nv-card-time">⏰ ${createdTime}</span>` : ""}
+                    ${note.duration ? `<span class="nv-card-time" style="color:#2e7d32">🎙 ${String(Math.floor(note.duration/60)).padStart(2,"0")}:${String(note.duration%60).padStart(2,"0")}</span>` : ""}
                 </div>
                 <div class="nv-card-actions">
                     <button class="nv-delete-btn" onclick="event.stopPropagation(); deleteNoteFromViewer('${dateStr}','${note.id}')" title="${isVI ? 'Xóa ghi chú này' : 'Delete this note'}">🗑️</button>
@@ -1108,6 +1110,7 @@ function renderHistoryList(notes, query) {
                         <span class="history-date">📅 ${highlight(formatted, q)}</span>
                         <span class="history-note-title"> · ${highlight(escapeHtml(note.title), q)}</span>
                         ${hasAnalysis ? `<span class="history-has-analysis">✨</span>` : ""}
+                        ${note.duration ? `<span style="font-size:.75rem;color:#2e7d32;font-weight:600;margin-left:4px">🎙 ${String(Math.floor(note.duration/60)).padStart(2,"0")}:${String(note.duration%60).padStart(2,"0")}</span>` : ""}
                     </div>
                     <div style="display:flex;align-items:center;gap:8px">
                         <button class="history-delete-btn" onclick="event.stopPropagation();deleteHistoryNote('${date}','${note.id}')" title="${isVI ? 'Xóa' : 'Delete'}">🗑️</button>
@@ -1279,14 +1282,15 @@ let chatHistory = [];
 function openChatModal() {
     const isVI = currentLanguage === "vi";
     const transcript = transcriptBox.value.trim();
-    document.getElementById("chatModalTitle").innerText = isVI ? "Trợ lý AI" : "AI Assistant";
-    document.getElementById("chatInput").placeholder = isVI ? "Hỏi bất cứ điều gì..." : "Ask me anything...";
+    if (!transcript) {
+        showToast(isVI ? "⚠️ Chưa có nội dung ghi chú để hỏi đáp!" : "⚠️ No note content to chat about!", "#c62828");
+        return;
+    }
+    document.getElementById("chatModalTitle").innerText = isVI ? "Hỏi đáp với ghi chú" : "Chat with Note";
+    document.getElementById("chatInput").placeholder = isVI ? "Hỏi về nội dung ghi chú..." : "Ask about the note...";
     chatHistory = [];
     const chatEl = document.getElementById("chatMessages");
-    const greeting = transcript
-        ? (isVI ? "Xin chào! Tôi đã đọc ghi chú của bạn. Bạn có thể hỏi về ghi chú hoặc bất cứ điều gì khác." : "Hi! I\'ve read your note. Feel free to ask about it or anything else.")
-        : (isVI ? "Xin chào! Tôi là trợ lý AI. Hỏi tôi bất cứ điều gì nhé!" : "Hi! I\'m your AI assistant. Ask me anything!");
-    chatEl.innerHTML = `<div class="chat-bubble chat-bubble-ai">🤖 ${greeting}</div>`;
+    chatEl.innerHTML = `<div class="chat-bubble chat-bubble-ai">🤖 ${isVI ? "Xin chào! Tôi đã đọc ghi chú của bạn. Hãy hỏi bất cứ điều gì về nội dung đó." : "Hi! I've read your note. Ask me anything about it."}</div>`;
     document.getElementById("chatNoteModal").style.display = "flex";
     document.getElementById("chatInput").focus();
 }
@@ -1314,12 +1318,8 @@ async function sendChat() {
                 model: "llama-3.3-70b-versatile",
                 messages: [
                     { role: "system", content: isVI
-                        ? (transcript
-                            ? `Bạn là trợ lý AI thông minh. Người dùng có ghi chú sau:\n\n---\n${transcript}\n---\n\nBạn có thể trả lời mọi câu hỏi: về ghi chú hoặc bất kỳ chủ đề nào khác. Trả lời bằng tiếng Việt, rõ ràng và hữu ích.`
-                            : "Bạn là trợ lý AI thông minh. Hãy trả lời mọi câu hỏi của người dùng một cách rõ ràng, hữu ích bằng tiếng Việt.")
-                        : (transcript
-                            ? `You are a helpful AI assistant. The user has this note:\n\n---\n${transcript}\n---\n\nAnswer any question — about the note or any other topic. Be clear and helpful.`
-                            : "You are a helpful AI assistant. Answer any question the user has, clearly and helpfully.")
+                        ? `Bạn là trợ lý học tập. Người dùng có ghi chú sau:\n\n---\n${transcript}\n---\n\nHãy trả lời các câu hỏi dựa trên nội dung ghi chú này. Trả lời bằng tiếng Việt, ngắn gọn và dễ hiểu.`
+                        : `You are a study assistant. The user has the following note:\n\n---\n${transcript}\n---\n\nAnswer questions based on this note content. Be concise and clear.`
                     },
                     ...chatHistory
                 ]
